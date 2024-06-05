@@ -1,0 +1,185 @@
+version: 2
+
+seeds:
+  - name: empresas_geral
+    schema: neoway_case
+    config:
+      column_types:
+        cnpj: STRING
+        dt_abertura: DATE
+        empresa_matriz: BOOL
+        cd_cnae_principal: INT64
+        endereco_cep: STRING
+        situacao_cadastral: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - unique
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+
+  - name: empresas_nivel_atividade
+    description: "Dataset contendo informações da atividade do CNPJ"
+    config:
+      column_types:
+        cnpj: STRING
+        nivel_atividade: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - unique
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+  
+  - name: empresas_porte
+    description: "Dataset contendo informações do porte da empresa"
+    config:
+      column_types:
+        cnpj: STRING
+        empresa_porte: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - unique
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+  
+  - name: empresas_saude_tributaria
+    description: "Dataset contendo informações da saude tributária do CNPJ"
+    config:
+      column_types:
+        cnpj: STRING
+        saude_tributaria: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - unique
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+  
+  - name: empresas_simples
+    description: "Dataset contendo informações se CNPJ é optante do Simples nacional e simei"
+    config:
+      column_types:
+        cnpj: STRING
+        optante_simples: STRING
+        optante_simei: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - unique
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+  
+  - name: empresas_judicializacao_geral
+    description: "arquivo tratado referente aos processos judicias de alguns CNPJs. Originalmente era o arquivo json"
+    config:
+      column_types:
+        cd_processo: STRING
+        cnpj: STRING
+        area: STRING
+        grau_processo: STRING
+        julgamento: STRING
+        uf: STRING
+        tribunal: STRING
+        ultimo_estado: STRING
+        citacao_tipo: STRING
+        municipio: STRING
+        juiz: STRING
+        valor_causa: FLOAT64
+        valor_predicao_condenacao: FLOAT64
+        contagem_partes: INT64
+        contagem_assuntos_cnj: STRING
+        orgao_julgador_orgao: STRING
+        dt_data_decisao: DATE
+        hora_decisao: STRING
+        dt_data_encerramento: DATE
+        hora_encerramento: STRING
+    columns:
+    - name: cnpj
+      tests:
+        - not_null
+    - name: cd_processo
+      tests:
+        - not_null
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+  
+  - name: empresas_judicializacao_partes
+    description: "arquivo tratado referente às partes dos processos judicias de alguns CNPJs. Originalmente era o arquivo json. Contém apenas informações das partes"
+    config:
+      column_types:
+        cd_processo: STRING
+        nome_normalizacao_neoway: STRING
+        polo: STRING
+    columns:
+    - name: cd_processo
+      tests:
+        - not_null
+    
+  
+  - name: empresas_judicializacao_assuntos_cnj
+    description: "arquivo tratado referente aos assuntos dos processos judicias de alguns CNPJs. Originalmente era o arquivo json. Contém apenas informações dos assuntos tratados"
+    config:
+      column_types:
+        cd_processo: STRING
+        codigo_cnj: INT64
+    columns:
+    - name: cd_processo
+      tests:
+        - not_null
+    
+  
+  - name: dim_cnaes
+    description: "tabela dimensão com qualidade dos códigos CNAE"
+    config:
+      column_types:
+        cd_cnae_principal: INT64
+        de_cnae_principal: STRING
+        de_ramo_atividade: STRING
+        de_setor: STRING
+    columns:
+    - name: cd_cnae_principal
+      tests:
+        - not_null
+        - unique
+  
+  - name: dim_ceps
+    config:
+      description: "tabela dimensão com referências geográficas do CEP"
+      column_types:
+        endereco_cep: STRING
+        endereco_municipio: STRING
+        endereco_uf: STRING
+        endereco_regiao: STRING
+        endereco_mesorregiao: STRING
+    columns:
+    - name: endereco_cep
+      tests:
+        - not_null
+        - unique
+
+  - name: codigos_cnj
+    config:
+      description: "codigos do CNJ e seus respectivos nomes"
+      column_types:
+        cod_item: INT64
+        cod_item_pai: INT64
+        nome: STRING
+        situacao: STRING
+    columns:
+    - name: cod_item
+      tests:
+        - not_null
+        - unique

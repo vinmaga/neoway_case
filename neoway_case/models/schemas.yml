@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: empresas_judicializadas
+    columns:
+      - name: cnpj
+        data_tests:
+          - unique
+          - not_null
+    data_tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+
+  - name: empresas_completas
+    columns:
+      - name: cnpj
+        data_tests:
+          - unique
+          - not_null
+    data_tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+
+  - name: tb_empresas
+    columns:
+      - name: cnpj
+        data_tests:
+          - unique
+          - not_null
+    data_tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
+
+  - name: dimensao_cep
+    columns:
+      - name: cep
+        data_tests:
+          - unique
+          - not_null
+    data_tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cep) = 8"
+
+  - name: dimensao_cnae
+    columns:
+      - name: cd_cnae_principal
+        data_tests:
+          - unique
+          - not_null
+  
+  - name: cnj_hierarquizados
+    columns:
+      - name: codigo_cnj
+        data_tests:
+          - unique
+          - not_null
+      - name: nome_item_raiz
+        data_tests:
+          - not_null
+
+  - name: tb_processos
+    columns:
+      - name: cd_processo
+        data_tests:
+          - unique
+          - not_null
+      - name: cnpj
+        data_tests:
+          - not_null
+    data_tests:
+    - dbt_utils.expression_is_true:
+        expression: "CHAR_LENGTH(cnpj) = 14"
